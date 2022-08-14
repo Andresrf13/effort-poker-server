@@ -2,7 +2,10 @@
   "name": "effort-power-be",
   "version": "1.0.0",
   "description": "backend for the effort poker planner",
-  "main": "index.js",
+  "main": "server.js",
+  "engines": {
+    "node": "16.x"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
@@ -13,6 +16,10 @@
     "scrum",
     "planner"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Andresrf13/effort-poker-server"
+  },
   "author": "andres.rf13",
   "license": "MIT",
   "dependencies": {
