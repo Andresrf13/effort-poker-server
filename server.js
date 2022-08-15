@@ -12,7 +12,6 @@ const EstimationMethod = require('./contracts/estimationMethods');
 const Room = require('./contracts/room');
 const stateRoom = require('./contracts/stateRoom');
 
-const hostname = 'localhost';
 const port = process.env.PORT || 3000;
 
 //------- Sessions -------//
@@ -215,6 +214,7 @@ function getRoom (roomId) {
     return sessionRooms.find(elem => elem.id === roomId);
 }
 
-server.listen(port, hostname, () => {
-    console.log(`Server is running on ${hostname}:${port}`);
-})
+
+server.listen(port, () => {
+    console.log('Server started on port '  + port);
+});
