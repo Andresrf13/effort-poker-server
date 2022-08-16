@@ -17,9 +17,9 @@ const port = process.env.PORT || 3000;
 //------- Sessions -------//
 const sessionRooms = [];
 
-const session1 = new Room({ id: '12', name: 'Room 1', estimationMethod: EstimationMethod.fibonacci, description: 'Testing room 1', users: [], createdBy: '', createdAt: Date.now() });
-const session2 = new Room({ id: '34', name: 'Room 2', estimationMethod: EstimationMethod.fibonacci, description: 'Testing room 1', users: [], createdBy: '', createdAt: Date.now() });
-const session3 = new Room({ id: uuidv4(), name: 'Room 3', estimationMethod: EstimationMethod.numericSequence, description: 'Testing room 1', users: [], createdBy: '', createdAt: Date.now() });
+const session1 = new Room({ id: '12', name: 'Silvally', estimationMethod: EstimationMethod.fibonacci, description: 'Testing room 1', users: [], createdBy: '', createdAt: Date.now() });
+const session2 = new Room({ id: '34', name: 'FrontEnd', estimationMethod: EstimationMethod.fibonacci, description: 'Testing room 1', users: [], createdBy: '', createdAt: Date.now() });
+const session3 = new Room({ id: uuidv4(), name: 'BackEnd', estimationMethod: EstimationMethod.numericSequence, description: 'Testing room 1', users: [], createdBy: '', createdAt: Date.now() });
 
 sessionRooms.push(session1);
 sessionRooms.push(session2);
@@ -61,10 +61,10 @@ io.on('connection', (socket) => {
             console.log('Room already exists');
             socket.emit('room-exists', room);
         } else {
-            room.id = uuidv4();
-            sessionRooms.push(room);
+            const newRoom = new Room({ ...room, id: uuidv4(), users: [], owner: socket.data.name, createdAt: Date.now() });
+            sessionRooms.push(newRoom);
             io.to('general').emit('rooms-list', sessionRooms);
-            socket.emit('room-created', room.name);
+            socket.emit('room-created', newRoom.name);
         }
     });
 
