@@ -53,6 +53,7 @@ io.on('connection', (socket) => {
                  tmpRoom = createRoomCopy(room);
             }
             io.sockets.in(room.id).emit('user-joined-room', { room: tmpRoom });
+            socket.broadcast.to('general').emit('rooms-list', sessionRooms);
         });
     });
 
@@ -110,7 +111,8 @@ io.on('connection', (socket) => {
         
         //for the user who joined
         socket.emit('user-joined', { user: socket.data, room: tmpRoom });
-        
+
+        socket.broadcast.to('general').emit('rooms-list', sessionRooms);
     });
 
     socket.on('voted', (roomId, vote) => {
@@ -190,7 +192,28 @@ io.on('connection', (socket) => {
         });
         io.sockets.in(roomId).emit('get-results', { room, results, total });
     });
+
+    socket.on('leave-room', (roomId) => {
+       leaveRoom(socket, roomId);
+    });
 });
+
+function leaveRoom(socket, roomId) {
+    if (roomId == null) {
+        return;
+    }
+    const room = getRoom(roomId);
+    if (room == null) {
+        return;
+    }
+
+    const index = room.users.findIndex(elem => elem.id === socket.data.id);
+    if (index === -1) {
+        return;
+    }
+    room.users.splice(index, 1);
+    socket.broadcast.to('general').emit('rooms-list', sessionRooms);
+}
 
 function createRoomCopy(room) {
     const tmpRoom = { ...room };
@@ -213,7 +236,6 @@ function createUser(socket, username) {
 function getRoom (roomId) {
     return sessionRooms.find(elem => elem.id === roomId);
 }
-
 
 server.listen(port, () => {
     console.log('Server started on port '  + port);
