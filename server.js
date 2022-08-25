@@ -17,8 +17,8 @@ const port = process.env.PORT || 3000;
 //------- Sessions -------//
 const sessionRooms = [];
 
-const session1 = new Room({ id: '12', name: 'Silvally', estimationMethod: EstimationMethod.fibonacci, description: 'Testing room 1', users: [], createdBy: '', createdAt: Date.now() });
-const session2 = new Room({ id: '34', name: 'FrontEnd', estimationMethod: EstimationMethod.fibonacci, description: 'Testing room 1', users: [], createdBy: '', createdAt: Date.now() });
+const session1 = new Room({ id: 'Silvally', name: 'Silvally', estimationMethod: EstimationMethod.fibonacci, description: 'Testing room 1', users: [], createdBy: '', createdAt: Date.now() });
+const session2 = new Room({ id: 'FE', name: 'FrontEnd', estimationMethod: EstimationMethod.fibonacci, description: 'Testing room 1', users: [], createdBy: '', createdAt: Date.now() });
 const session3 = new Room({ id: uuidv4(), name: 'BackEnd', estimationMethod: EstimationMethod.numericSequence, description: 'Testing room 1', users: [], createdBy: '', createdAt: Date.now() });
 
 sessionRooms.push(session1);
@@ -88,8 +88,7 @@ io.on('connection', (socket) => {
 
         const room = getRoom(roomId);
         if (room == null) {
-            console.log('Room not found');
-            socket.emit('room-not-found', roomId);
+            handleNotRoom(socket, roomId);
             return;
         }
         socket.join(roomId);
@@ -116,6 +115,12 @@ io.on('connection', (socket) => {
     });
 
     socket.on('voted', (roomId, vote) => {
+
+        if (socket.data.id == null) {
+            socket.emit('user-not-found');
+            return;
+        }
+
         if (roomId == null || vote == null) {
             return;
         }
@@ -197,6 +202,11 @@ io.on('connection', (socket) => {
        leaveRoom(socket, roomId);
     });
 });
+
+function handleNotRoom(socket, roomId) {
+    console.log('Room not found');
+    socket.emit('room-not-found', roomId);
+}
 
 function leaveRoom(socket, roomId) {
     if (roomId == null) {
