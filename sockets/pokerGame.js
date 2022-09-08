@@ -134,6 +134,6 @@ module.exports = function (params) {
     });
 
     socket.on('leave-room', (roomId) => {
-        leaveRoom(socket, roomId);
+        leaveRoom(socket, roomId, sessionRooms);
     });
 }
